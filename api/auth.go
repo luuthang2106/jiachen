@@ -1,6 +1,7 @@
 package api
 
 import (
+	"jiachen/cache"
 	"jiachen/model"
 	"jiachen/store"
 	"jiachen/util"
@@ -18,6 +19,10 @@ var (
 
 func ProtectPath(c *fiber.Ctx) error {
 	path := c.Route().Path
+
+	if _, ok := cache.API.Get(path); !ok {
+		return c.Status(fiber.StatusNotFound).SendString("api not found")
+	}
 
 	tokenStr := c.Cookies("token")
 	if tokenStr == "" {

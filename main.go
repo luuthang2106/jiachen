@@ -7,7 +7,6 @@ import (
 	"jiachen/model"
 	"jiachen/pool"
 	"jiachen/store"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -24,9 +23,7 @@ func main() {
 	store.Account.Init(s)
 	store.API.Init(s)
 
-	ttl := 5 * time.Second
-	time.AfterFunc(ttl, func() { fmt.Println("cccc") })
-	cache.API.Get("thang")
+	cache.API.Warmup(cache.WarmupAPICache)
 
 	// start := time.Now()
 	// arr, err1 := store.Account.Find(model.Account{Username: "linh"})
@@ -54,6 +51,7 @@ func main() {
 	app.Post("/login", api.Login)
 	app.Post("/account", api.ProtectPath, api.CreateAccount)
 	app.Put("/account", api.ProtectPath, api.CreateAccount)
+	app.Get("/thang", api.ProtectPath, api.CreateAccount)
 
 	app.Listen(fmt.Sprintf(":%d", port))
 }

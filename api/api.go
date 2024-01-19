@@ -1,6 +1,7 @@
 package api
 
 import (
+	"jiachen/cache"
 	"jiachen/exec"
 	"jiachen/model"
 	"jiachen/store"
@@ -29,6 +30,10 @@ func CreateAPI(c *fiber.Ctx) error {
 	})
 	if err != nil {
 		return err
+	}
+
+	if input.IsActive != nil && *input.IsActive {
+		cache.API.Set(input.Path, struct{}{})
 	}
 
 	return c.JSON(fiber.Map{
